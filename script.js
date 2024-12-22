@@ -22,7 +22,6 @@ let offsetY = (gridRows - viewportRows)/2 // Center inital starting point
 let activeColor = "#000000" // Black
 let activeTool
 let isDragging = false
-let startX = 0, startY = 0; // Track mouse position for dragging
 
 
 // Logical Grid
@@ -100,10 +99,7 @@ canvas.addEventListener("mouseup", (e) => {
 canvas.addEventListener("mousemove", (e) => {
     if (isDragging) {
         movementX = -e.movementX / 10
-        console.log(movementX)
         movementY = -e.movementY / 10
-        startX = e.clientX
-        starty = e.clientY
 
         movementX = Math.max(-1, Math.min(movementX, 1))
         movementY = Math.max(-1, Math.min(movementY, 1))
@@ -111,12 +107,20 @@ canvas.addEventListener("mousemove", (e) => {
     }
 })
 canvas.addEventListener("click", (e) => {
+    const rect = canvas.getBoundingClientRect()
+    const col = Math.floor((e.clientX - rect.x) / cellSize + offsetX)
+    const row = Math.floor((e.clientY - rect.y) / cellSize + offsetY)
     if (activeTool == "paint") {
-        const rect = canvas.getBoundingClientRect()
-        const col = Math.floor((e.clientX - rect.x) / cellSize + offsetX)
-        const row = Math.floor((e.clientY - rect.y) / cellSize + offsetY)
         grid[row][col].color = activeColor
         drawGrid()
+    }
+    else if (activeTool == "select") {
+        const rowDisplay = document.getElementById("row")
+        const colDisplay = document.getElementById("col")
+        const colorDisplay = document.getElementById("color")
+        rowDisplay.textContent = row
+        colDisplay.textContent = col
+        colorDisplay.textContent = grid[row][col].color
     }
 })
 
@@ -133,11 +137,16 @@ toolbar.addEventListener("change", (e) => {
     switch (selectedTool) {
         case "paint":
             activeTool = "paint"
+            canvas.style.cursor = "auto"
             break
         case "pan":
             activeTool = "pan"
             canvas.style.cursor = "grab"
             break
+        case "select":
+            activeTool = "select"
+            canvas.style.cursor = "auto"
+            break;
         default:
             console.log("error")
             break
