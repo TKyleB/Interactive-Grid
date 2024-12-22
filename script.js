@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 
 const toolbar = document.getElementById("toolbar")
 const colorPicker = document.getElementById("colorPicker")
+const addSwatchButton = document.getElementById("addSwatchButton")
 
 canvas.height = 500;
 canvas.width = 1200;
@@ -18,7 +19,7 @@ const viewportCols = Math.ceil(canvas.width / cellSize)
 let offsetX = (gridCols - viewportCols)/2 // Center initial starting point
 let offsetY = (gridRows - viewportRows)/2 // Center inital starting point
 
-let activeColor = "#000000"
+let activeColor = "#000000" // Black
 let activeTool
 let isDragging = false
 let startX = 0, startY = 0; // Track mouse position for dragging
@@ -82,13 +83,18 @@ canvas.addEventListener("mousedown", (e) => {
         isDragging = true
         startX = e.clientX
         startY = e.clientY
-        canvas.style.cursor = "grab"
+        canvas.style.cursor = "grabbing"
     }
 })
 canvas.addEventListener("mouseup", (e) => {
     if (e.button == 1 || e.button === 0 && activeTool == "pan") {
         isDragging = false
-        canvas.style.cursor = "auto"
+        if (e.button == 1) {
+            canvas.style.cursor = "auto"
+        }
+        else {
+            canvas.style.cursor = "grab"
+        }
     }
 })
 canvas.addEventListener("mousemove", (e) => {
@@ -130,6 +136,7 @@ toolbar.addEventListener("change", (e) => {
             break
         case "pan":
             activeTool = "pan"
+            canvas.style.cursor = "grab"
             break
         default:
             console.log("error")
@@ -138,10 +145,34 @@ toolbar.addEventListener("change", (e) => {
     }
 })
 
+// Updating active color based on changes to color picker
 colorPicker.addEventListener("change", (e) => {
     activeColor = colorPicker.value
 })
 
+// Add current active color to swatches & handles re-using already saved swatches
+addSwatchButton.addEventListener("click", (e) => {
+    const swatchButton = document.createElement("button")
+    swatchButton.classList.add("swatch")
+    swatchButton.style.backgroundColor = activeColor
+
+    // Switching back to previously saved swatches
+    swatchButton.addEventListener("click", (e) => {
+        const color = swatchButton.style.backgroundColor
+        colorPicker.value = rgbToHex(color)
+        activeColor = color
+    })
+
+    const parent = document.getElementById("swatchHolder")
+    parent.appendChild(swatchButton)
+})
+
+// Helper function to convert css background colors to Hex
+function rgbToHex(rgb) {
+    const match = rgb.match(/\d+/g);
+    if (!match) return '#000000';
+    return `#${parseInt(match[0]).toString(16).padStart(2, '0')}${parseInt(match[1]).toString(16).padStart(2, '0')}${parseInt(match[2]).toString(16).padStart(2, '0')}`;
+}
 drawGrid()
 
 
