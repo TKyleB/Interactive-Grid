@@ -29,7 +29,7 @@ const grid = []
 for (let row = 0; row < gridRows; row++) {
     grid[row] = []
     for (let col = 0; col < gridCols; col++) {
-        grid[row][col] = { color: (row + col) % 2 === 0 ? "silver" : "lightgray" };
+        grid[row][col] = { color: "white" };
         
     }
 }
@@ -55,8 +55,8 @@ function drawGrid() {
 }
 
 function moveViewport(dx, dy) {
-    offsetX = Math.max(0, Math.min(gridCols - viewportCols, offsetX + dx));
-    offsetY = Math.max(0, Math.min(gridRows - viewportRows, offsetY + dy));
+    offsetX = Math.round(Math.max(0, Math.min(gridCols - viewportCols, offsetX + dx)));
+    offsetY = Math.round(Math.max(0, Math.min(gridRows - viewportRows, offsetY + dy)));
     drawGrid();
 }
 
@@ -182,6 +182,16 @@ function rgbToHex(rgb) {
     if (!match) return '#000000';
     return `#${parseInt(match[0]).toString(16).padStart(2, '0')}${parseInt(match[1]).toString(16).padStart(2, '0')}${parseInt(match[2]).toString(16).padStart(2, '0')}`;
 }
+
+
+function saveGrid() {
+    const blob = new Blob([JSON.stringify(grid)], {type: "application/json"})
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "grid_data.json";
+    link.click(); 
+}
+
 drawGrid()
 
 
