@@ -1,9 +1,35 @@
 .container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+    gap: 5px;
 }
 
 canvas {
     border: 1px solid black;
 }
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    padding: 5px;
+    gap: 2px;
+}
+
+.input-radio {
+    display: flex;
+    
+    margin-top: 30px;
+}
+
+input[type=radio] {
+    display: none;
+}
+    input[type=radio] + label {
+        padding: 5px;
+        border-radius: 10px;
+        border: 1px solid black;
+    }

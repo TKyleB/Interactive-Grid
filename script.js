@@ -1,7 +1,10 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.height = 800;
+const toolbar = document.getElementById("toolbar")
+const colorPicker = document.getElementById("colorPicker")
+
+canvas.height = 500;
 canvas.width = 1200;
 
 const gridRows = 200
@@ -15,6 +18,8 @@ const viewportCols = Math.ceil(canvas.width / cellSize)
 let offsetX = (gridCols - viewportCols)/2 // Center initial starting point
 let offsetY = (gridRows - viewportRows)/2 // Center inital starting point
 
+let activeColor = "#000000"
+let activeTool
 let isDragging = false
 let startX = 0, startY = 0; // Track mouse position for dragging
 
@@ -73,7 +78,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 canvas.addEventListener("mousedown", (e) => {
-    if (e.button === 1) {
+    if (e.button === 1 || e.button === 0 && activeTool == "pan") {
         isDragging = true
         startX = e.clientX
         startY = e.clientY
@@ -81,29 +86,60 @@ canvas.addEventListener("mousedown", (e) => {
     }
 })
 canvas.addEventListener("mouseup", (e) => {
-    if (e.button == 1) {
+    if (e.button == 1 || e.button === 0 && activeTool == "pan") {
         isDragging = false
         canvas.style.cursor = "auto"
     }
 })
 canvas.addEventListener("mousemove", (e) => {
     if (isDragging) {
-        movementX = -(e.clientX - startX) / 2
-        movementY = -(e.clientY - startY) / 2
+        movementX = -e.movementX / 10
+        console.log(movementX)
+        movementY = -e.movementY / 10
         startX = e.clientX
         starty = e.clientY
 
-        movementX = Math.max(-0.5, Math.min(movementX, 0.5))
+        movementX = Math.max(-1, Math.min(movementX, 1))
         movementY = Math.max(-1, Math.min(movementY, 1))
         moveViewport(movementX, movementY)
     }
 })
 canvas.addEventListener("click", (e) => {
-    const rect = canvas.getBoundingClientRect()
-    const col = Math.floor((e.clientX - rect.x) / cellSize + offsetX)
-    const row = Math.floor((e.clientY - rect.y) / cellSize + offsetY)
-    grid[row][col].color = "red"
-    drawGrid()
+    if (activeTool == "paint") {
+        const rect = canvas.getBoundingClientRect()
+        const col = Math.floor((e.clientX - rect.x) / cellSize + offsetX)
+        const row = Math.floor((e.clientY - rect.y) / cellSize + offsetY)
+        grid[row][col].color = activeColor
+        drawGrid()
+    }
+})
+
+// Switching between the diffferent tools on the toolbar
+toolbar.addEventListener("change", (e) => {
+    const toolbarSelects = document.getElementsByName("toolbar")
+    let selectedTool
+    for (let i = 0; i < toolbarSelects.length; i++) {
+        if (toolbarSelects[i].checked) {
+            selectedTool = toolbarSelects[i].value
+            break
+        }
+    }
+    switch (selectedTool) {
+        case "paint":
+            activeTool = "paint"
+            break
+        case "pan":
+            activeTool = "pan"
+            break
+        default:
+            console.log("error")
+            break
+        
+    }
+})
+
+colorPicker.addEventListener("change", (e) => {
+    activeColor = colorPicker.value
 })
 
 drawGrid()
