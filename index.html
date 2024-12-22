@@ -14,7 +14,7 @@
     <div class="container">
         <div class="row pt-3">
             <div class="col-1">
-                    <form action="" class="d-flex flex-column justify-content-center align-items-center px-2 gap-2 border border-dark" id="toolbar">
+                    <form action="" class="d-flex flex-column justify-content-center align-items-center px-2 pb-2 gap-2 border border-dark" id="toolbar">
                         <strong class="text-center">Tools</strong>
                         <div class="w-100 d-flex justify-content-center">
                             <input type="radio" class="btn-check" name="toolbar" id="paintSelect" autocomplete="off" value="paint">
@@ -36,7 +36,7 @@
                         </div>
                     </form> 
             </div>
-            <canvas id="canvas" class="col-11"></canvas>
+            <canvas id="canvas" class="col-11 px-0"></canvas>
         </div>
         <div class="row mt-1">
             <div class="col-1"></div>
@@ -45,12 +45,11 @@
                 <button class="btn btn-success btn-sm" id="addSwatchButton">+</button>
             </div>
         </div>
-        <div class="row mt-1">
+        <div class="row mt-1 gap-1">
             <div class="col-1"></div>
-            <div class="col-11" id="swatchHolder">
+            <div class="col-3 border" id="swatchHolder">
                 <div class="d-flex align-items-center gap-2">
                     <p class="fw-bold p-0 m-0">Swatches</p>
-                    <button class="btn btn-success btn-sm" id="addSwatchButton">+</button>
                 </div>
                 
             </div>
